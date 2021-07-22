@@ -25,9 +25,9 @@ def time_float(dt,t):
     # tmp_d.tzinfo = pytz.timezone('Asia/Kolkata')
     if t > 0:
         # nothing new
-        return tmp_d + timedelta(t)
+        return tmp_d + timedelta(t+0.229166666666667)
     elif t == 0:
-        return tmp_d + timedelta(1)
+        return tmp_d + timedelta(1+0.229166666666667)
 
 
 switchcase = {
@@ -56,6 +56,7 @@ def value_converstion(val):
         return f'{hrs}:{mins}'
     else:
         return val
+
 
 
 

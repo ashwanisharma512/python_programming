@@ -1,12 +1,14 @@
 import win32com.client as win32
+excel = win32.gencache.EnsureDispatch('Excel.Application')
+# import win32com.client.constants as cc
 import glob,re
 from datetime import datetime, time,timedelta
 from module1 import time_converter,value_converstion
 import tkinter as tk
 
 company = 'BRPL'
+main_file = r"D:\Process Improvement Project\ED CELL\Outage Reports\Report as per our format\Updated_Summary.xlsx"
 
-excel = win32.gencache.EnsureDispatch('Excel.Application')
 excel.Visible = True
 
 def change_company():
@@ -18,9 +20,27 @@ def change_company():
     lbl.config(text=company)
 
 def file_list():
-    global files
+    global all_files
     folder_path = r'D:\Process Improvement Project\ED CELL\Outage Reports\Report as per our format\{}\{}'
-    files = glob.glob(folder_path.format(company,'*.xlsx'))
+    all_files = glob.glob(folder_path.format(company,'*.xlsx'))
+    remove_updated_files()
+
+def remove_updated_files():
+    global files
+    global column
+    try:
+        wb_main = excel.Workbooks.Open(main_file)
+    except:
+        wb_main = excel.Workbooks(main_file.split('\\')[-1])
+    ws_main = wb_main.Worksheets('python_backup')
+    if company == 'BRPL':
+        column = 'A'
+    elif company == 'BYPL':
+        column = 'B'
+    rowno = ws_main.Range(f'{column}9999').End(3).Row
+    # Already_updated_file = ws_main.Range(f'{column}2:{column}{rowno}').Value
+    Already_updated_file = [ ws_main.Range(f'{column}{r}').Value for r in range(2,rowno+1) ]
+    files = [ file for file in all_files if file not in Already_updated_file ]
 
 def read_files():
     global company_data
@@ -49,23 +69,25 @@ def read_files():
                 d[key] = val
             company_data.append(d)
         wb.Close()
+    excel.DisplayAlerts = True
     # excel.Quit()
 
 def correct_time():
     for data in company_data:
-        # print('{} , {} , {}'.format(data['End\nTime (In Date Hrs)'],data['Start\nTime (In Date Hrs)'],data['Time (In Date Hrs)']),end=' ')
-        data['End\nTime (In Date Hrs)'],data['Start\nTime (In Date Hrs)'],data['Time (In Date Hrs)'] = time_converter(
-            data['Date'],data['End\nTime (In Date Hrs)'],data['Start\nTime (In Date Hrs)'],data['Time (In Date Hrs)'])
-        # print(' --{}, {} , {} , {}'.format(data['Date'],data['End\nTime (In Date Hrs)'],data['Start\nTime (In Date Hrs)'],data['Time (In Date Hrs)']),end=' ')
-        # input()
-        if isinstance(data['End\nTime (In Date Hrs)'], datetime) and isinstance(data['Start\nTime (In Date Hrs)'],datetime):
-            data['Duration'] = data['End\nTime (In Date Hrs)'] - data['Start\nTime (In Date Hrs)']
-        else:
-            data['Duration'] = ''
-        if isinstance(data['Start\nTime (In Date Hrs)'], datetime) and isinstance(data['Time (In Date Hrs)'],datetime):
-            data['Load Effected Duration'] = data['Time (In Date Hrs)'] - data['Start\nTime (In Date Hrs)']
-        else:
-            data['Load Effected Duration'] = ''
+        try:
+            data['End\nTime (In Date Hrs)'],data['Start\nTime (In Date Hrs)'],data['Time (In Date Hrs)'] = time_converter(
+                data['Date'],data['End\nTime (In Date Hrs)'],data['Start\nTime (In Date Hrs)'],data['Time (In Date Hrs)'])
+            if isinstance(data['End\nTime (In Date Hrs)'], datetime) and isinstance(data['Start\nTime (In Date Hrs)'],datetime):
+                data['Duration'] = data['End\nTime (In Date Hrs)'] - data['Start\nTime (In Date Hrs)']
+            else:
+                data['Duration'] = ''
+            if isinstance(data['Start\nTime (In Date Hrs)'], datetime) and isinstance(data['Time (In Date Hrs)'],datetime):
+                data['Load Effected Duration'] = data['Time (In Date Hrs)'] - data['Start\nTime (In Date Hrs)']
+            else:
+                data['Load Effected Duration'] = ''
+        except Exception as e:
+            print(e.args)
+            print(data['Date'],data['Sr. No.'])
 
 def all_in_one_file():
     keys = []
@@ -74,14 +96,29 @@ def all_in_one_file():
             if key not in keys:
                 keys.append(key)
     if len(keys) > 0:
-        wbnew = excel.Workbooks.Add()
-        ws = wbnew.ActiveSheet
-        for col,key in enumerate(keys,start=1):
-            ws.Cells(1,col).Value = key
-        for row,data in enumerate(company_data,start=2):
+        try:
+            wb_main = excel.Workbooks.Open(main_file)
+        except:
+            wb_main = excel.Workbooks(main_file.split('\\')[-1])
+        ws_main = wb_main.Worksheets(company)
+        rowno = ws_main.Range('A9999').End(3).Row
+        if rowno == 1:
             for col,key in enumerate(keys,start=1):
-                ws.Cells(row,col).Value = value_converstion(data[key])
-        wbnew.SaveAs(f'{company}.xlsx')
+                ws_main.Cells(1,col).Value = key
+        colno = ws_main.Range('A1').End(2).Column
+        for row,data in enumerate(company_data,start=rowno+1):
+            for col in range(1,colno+1):
+                if ws_main.Cells(1,col).Value in data.keys():
+                    ws_main.Cells(row,col).Value = value_converstion(data[ws_main.Cells(1,col).Value])
+        ws_main = wb_main.Worksheets('python_backup')
+        if company == 'BRPL':
+            column = 'A'
+        elif company == 'BYPL':
+            column = 'B'
+        rowno = ws_main.Range(f'{column}9999').End(3).Row +1
+        for row,file in enumerate(files,start=0):
+            ws_main.Range(f'{column}{rowno+row}').Value = file          
+        wb_main.Save()
 
 btn_list =[ {
     'text' : 'Change Company',

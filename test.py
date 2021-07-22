@@ -296,86 +296,108 @@
 # ws.Name = 'Muloss'
 # ws.Range("A1:E1").Value = ['Date1','Date2','GENERATION','BRPL','TRANSCO','NDPL']
 # for n,dic in enumerate(mu_list,start=2):
-#     ws.Range('A{n}:E{n}'.format(n=n)).Value = [dic.values()]
+# #     ws.Range('A{n}:E{n}'.format(n=n)).Value = [dic.values()]
 
 
-# import os
-# import pyautogui
-# winium_path = r'D:\Process Improvement Project\python_programming\Winium.Desktop.Driver.exe'
-# pyautogui.hotkey('win','r')
-# pyautogui.typewrite(winium_path)
-# pyautogui.hotkey('enter')
-# # os.system(winium_path)
+# # import os
+# # import pyautogui
+# # winium_path = r'D:\Process Improvement Project\python_programming\Winium.Desktop.Driver.exe'
+# # pyautogui.hotkey('win','r')
+# # pyautogui.typewrite(winium_path)
+# # pyautogui.hotkey('enter')
+# # # os.system(winium_path)
 
-# import time
-# import pyautogui
+# # import time
+# # import pyautogui
 
-# time.sleep(5)
+# # time.sleep(5)
 
-# pyautogui.hotkey('ctrl','home')
-# pyautogui.hotkey(['down']*6)
-# d = {}
+# # pyautogui.hotkey('ctrl','home')
+# # pyautogui.hotkey(['down']*6)
+# # d = {}
 
-# d['GRIDNAME'] = 'xyz'
-# d['FEEDERNAME'] = 'abc'
-# d['Y_SYSTIME'] = 'XX.XX.XXXX'
-# d['EVENT'] = 'ON'
-# d['AUTOTRIP'] = 'NO'
-# d['R'] = 12
-# d['Y'] = 14
-# d['B'] = 16
-# d['RY'] = 11
-# d['BR'] = 11
-# d['YB'] = 11
+# # d['GRIDNAME'] = 'xyz'
+# # d['FEEDERNAME'] = 'abc'
+# # d['Y_SYSTIME'] = 'XX.XX.XXXX'
+# # d['EVENT'] = 'ON'
+# # d['AUTOTRIP'] = 'NO'
+# # d['R'] = 12
+# # d['Y'] = 14
+# # d['B'] = 16
+# # d['RY'] = 11
+# # d['BR'] = 11
+# # d['YB'] = 11
 
-# msg = f'''GRID NAME : {d['GRIDNAME']}
-# Feeder Name : {d['FEEDERNAME']}
-# Time : {d['Y_SYSTIME']}
-# Breaker Status : {d['EVENT']}
-# AutoTrip : {d['AUTOTRIP']}
-# R-Y-B Current : {d['R']},{d['Y']},{d['B']}
-# R-Y-B Voltage : {d['RY']},{d['BR']},{d['YB']}'''
+# # msg = f'''GRID NAME : {d['GRIDNAME']}
+# # Feeder Name : {d['FEEDERNAME']}
+# # Time : {d['Y_SYSTIME']}
+# # Breaker Status : {d['EVENT']}
+# # AutoTrip : {d['AUTOTRIP']}
+# # R-Y-B Current : {d['R']},{d['Y']},{d['B']}
+# # R-Y-B Voltage : {d['RY']},{d['BR']},{d['YB']}'''
 
-# print(msg)
+# # print(msg)
 
-def type1():
-    print('print Type 1')
+# def type1():
+#     print('print Type 1')
 
-def type2():
-    print('print Type 2')
+# def type2():
+#     print('print Type 2')
 
-def type3():
-    print('print Type 3')
+# def type3():
+#     print('print Type 3')
 
-def type4():
-    print('print Type 4')
+# def type4():
+#     print('print Type 4')
 
-def type5():
-    print('print Type 5')
+# def type5():
+#     print('print Type 5')
 
-def type6():
-    print('Type 6')
-
-
-
-switchcase = {
-    str : type1,
-    float : type2,
-    int : type3,
+# def type6():
+#     print('Type 6')
 
 
+
+# switchcase = {
+#     str : type1,
+#     float : type2,
+#     int : type3,
+
+
+# }
+
+# i = 'sfsfsdf'
+# print(type(i))
+# print()
+# switchcase[type(i)]()
+
+
+# type_list = []
+# key_list = ['End\nTime (In Date Hrs)','Start\nTime (In Date Hrs)','Time (In Date Hrs)']
+# for data in company_data:
+#     for key in key_list:
+#         if type(data[key]) not in type_list:
+#             type_list.append(type(data[key]))
+
+import requests
+
+payload = {
+    "Company":"BRPL",
+    "circle":"",
+    "Division":"",
+    "voltage":"ALL",
+    "from":"01-04-2021 00:00",
+    "to":"22-07-2021 00:00",
+    "Reason":"All"
+    }
+cookies = {
+    'ASP.NET_SessionId' :'sxw43mph50slbzymfkltewcg;', 
+    '.ASPXAUTH' : '958286E1AEB9A45982E78620DAD8E0EA5153A07B840E066F9FFB47733DCA3B351D302991768AAD8B301952DEB0789C7D43101C5BAA18A1AE4391ADE39C35F8FFA8F4C9C3DEE7CD253B9CFC06640EEAC5831744BC1C8ED10D5EC4BF7D9188A5FC8525E373A0029B02534561BCF349B6B18E022CD931457AB3CA95C2EB5A95F3D57E40D6960409CDB6F03DBE9836C198F9'
 }
 
-i = 'sfsfsdf'
-print(type(i))
-print()
-switchcase[type(i)]()
+url = 'http://10.125.64.81/IOMS/Reports/getbreakdownmisreport'
+
+res = requests.get(url=url)
 
 
-type_list = []
-key_list = ['End\nTime (In Date Hrs)','Start\nTime (In Date Hrs)','Time (In Date Hrs)']
-for data in company_data:
-    for key in key_list:
-        if type(data[key]) not in type_list:
-            type_list.append(type(data[key]))
 
