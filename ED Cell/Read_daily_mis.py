@@ -58,6 +58,9 @@ def read_files():
         date = datetime.strptime(re.findall('\d\d.\d\d.\d\d\d\d',file)[0],'%d.%m.%Y').strftime('%d-%b-%Y')
         # keys = [ ws.Cells(2,col).Value if ws.Cells(3,col).Value == None else ws.Cells(3,col).Value for col in range(1,colno+1) ]
         for row in range(4,rowno+1):
+            if company == 'BYPL':
+                if ws.Cells(row,1).Value == None:
+                    continue
             d = {}
             d['Date'] = date
             for col in range(1,colno+1):
@@ -69,7 +72,7 @@ def read_files():
                 d[key] = val
             company_data.append(d)
         wb.Close()
-    excel.DisplayAlerts = True
+        excel.DisplayAlerts = True
     # excel.Quit()
 
 def correct_time():
