@@ -24,7 +24,7 @@ def time_float(dt,t):
     tmp_d = datetime.strptime(dt,'%d-%b-%Y')
     # tmp_d.tzinfo = pytz.timezone('Asia/Kolkata')
     if t > 0:
-        # nothing
+        # nothing new
         return tmp_d + timedelta(t)
     elif t == 0:
         return tmp_d + timedelta(1)
