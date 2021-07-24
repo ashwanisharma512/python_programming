@@ -121,7 +121,7 @@ def scada_live():
         if g['gname'] == d['Grid Name']:
             gid = g['gid']
             break
-    url = 'http://10.125.64.86/Scada_Live/Base/GETFeederLoadByGrid?gridId={}&Type=All'.format(gid)
+    url = f'http://10.125.64.86/Scada_Live/Base/GETFeederLoadByGrid?gridId={gid}&Type=All'
     try:
         response = requests.get(url,20)
         data = json.loads(response.json())
@@ -141,6 +141,9 @@ def scada_live():
 #     while True:
 #         if 'none' in img.get_attribute('style'):
 #             break
+
+def refresh():
+    driver1.refresh()
 
 def scadamsg(d):
     if type(d) == str:
@@ -218,6 +221,10 @@ functions = [
     {
         'fun' : login_ODS,
         'text' : 'Login ODS'
+    },
+    {
+        'fun' : refresh,
+        'text' : 'Refresh ODS'
     },
     {
         'fun' : scada_live,
